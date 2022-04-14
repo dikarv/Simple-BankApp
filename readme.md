@@ -14,6 +14,8 @@ Dependencies: pgx, sqlx, gin gonic
 
 ![image](https://user-images.githubusercontent.com/63460549/163395932-88a12168-bfce-4099-bd45-133adb2f1eb1.png)
 
+### this repo is still in progress
+
 ### Todo List
 
-- sync user login to transfer features
+- sync user login with transfer features
