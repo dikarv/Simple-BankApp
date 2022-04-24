@@ -3,6 +3,7 @@ package main
 import (
 	"enigmacamp.com/bank/config"
 	"enigmacamp.com/bank/delivery/api"
+	"enigmacamp.com/bank/delivery/tokenauth"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,8 +21,9 @@ func (p *appServer) initHandlers() {
 }
 
 func (p *appServer) v1() {
-	customerApiGroup := p.routerEngine.Group("/users")
-	api.NewCustomerApi(customerApiGroup, p.cfg.UseCaseManager.LoginUseCase(), p.cfg.UseCaseManager.TransferUseCase())
+	p.routerEngine.Use(tokenauth.AuthTokenMiddleware())
+	customerApiGroup := p.routerEngine.Group("/bank")
+	api.NewCustomerApi(customerApiGroup, p.cfg.UseCaseManager.LoginUseCase(), p.cfg.UseCaseManager.TransferUseCase(), p.cfg.UseCaseManager.LogoutUseCase())
 }
 
 func (p *appServer) Run() {

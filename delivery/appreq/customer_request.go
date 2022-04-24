@@ -6,8 +6,11 @@ type CustomerRequestLogin struct {
 }
 
 type CustomerRequestPayment struct {
-	SenderAccountNumber   string `json:"sender_account_number"`
 	ReceiverAccountNumber string `json:"receiver_account_number"`
 	AmountTransfer        int    `json:"amount_transfer"`
 	Token                 string `json:"Token"`
+}
+
+type AuthHeader struct {
+	AuthorizationHeader string `header:"Authorization"`
 }
