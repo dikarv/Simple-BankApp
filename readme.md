@@ -1,4 +1,4 @@
-# SimpleBankApp
+# MNCTestApp
 SimpleBankApp made with Go with Clean Architecture (API). 
 Database : SQL
 Dependencies: pgx, sqlx, gin gonic
