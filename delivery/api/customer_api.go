@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"strconv"
 
 	"enigmacamp.com/bank/delivery/appreq"
 	"enigmacamp.com/bank/delivery/tokenauth"
@@ -25,13 +26,13 @@ func (a *CustomerApi) userLogin() gin.HandlerFunc {
 			return
 		}
 		token, err := tokenauth.GenerateToken(user.AccountNumber, "user@corp.com")
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err.Error())
+		}
 		err = a.loginUseCase.Login(user.AccountNumber, user.Password, token)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, "LOGIN FAILED")
+			c.JSON(http.StatusInternalServerError, err.Error())
 			return
-		}
-		if err != nil {
-			c.AbortWithStatus(401)
 		}
 		c.JSON(200, gin.H{
 			"token": token,
@@ -42,7 +43,7 @@ func (a *CustomerApi) userLogin() gin.HandlerFunc {
 func (a *CustomerApi) userLogout() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var authHeader appreq.AuthHeader
-		accountNumber := c.Param("user")
+		accountNumber, _ := strconv.Atoi(c.Param("user"))
 		err := c.ShouldBindHeader(&authHeader)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -61,7 +62,7 @@ func (a *CustomerApi) Transfer() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var authHeader appreq.AuthHeader
 		var custReq appreq.CustomerRequestPayment
-		senderAccountNumber := c.Param("user")
+		senderAccountNumber, _ := strconv.Atoi(c.Param("user"))
 		err := a.ParseRequestBody(c, &custReq)
 		if err != nil {
 			c.Error(err)
@@ -72,9 +73,9 @@ func (a *CustomerApi) Transfer() gin.HandlerFunc {
 			c.Error(err)
 			return
 		}
-		err = a.transferUseCase.Transfer(senderAccountNumber, custReq.ReceiverAccountNumber, authHeader.AuthorizationHeader, custReq.AmountTransfer)
+		err = a.transferUseCase.Transfer(senderAccountNumber, custReq.ReceiverAccountNumber, authHeader.AuthorizationHeader, custReq.AmountTransfer, custReq.IsMerchant)
 		if err != nil {
-			c.Error(err)
+			c.JSON(400, err.Error())
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{

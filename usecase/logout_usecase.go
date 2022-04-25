@@ -5,14 +5,14 @@ import (
 )
 
 type LogoutUseCase interface {
-	Logout(accountNumber, token string) error
+	Logout(accountNumber int, token string) error
 }
 
 type logoutUseCase struct {
 	repo repository.CustomerRepo
 }
 
-func (l *logoutUseCase) Logout(accountNumber, token string) error {
+func (l *logoutUseCase) Logout(accountNumber int, token string) error {
 	err := l.repo.Logout(accountNumber, token)
 	if err != nil {
 		return err

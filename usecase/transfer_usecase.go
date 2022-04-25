@@ -5,19 +5,26 @@ import (
 )
 
 type TransferUseCase interface {
-	Transfer(SenderAccountNumber, receiverAccountNumber, token string, amountTransfer int) error
+	Transfer(SenderAccountNumber int, receiverAccountNumber int, token string, amountTransfer int, isMerchant bool) error
 }
 
 type transferUseCase struct {
 	repo repository.CustomerRepo
 }
 
-func (t *transferUseCase) Transfer(SenderAccountNumber, receiverAccountNumber, token string, amountTransfer int) error {
-	err := t.repo.SendTransfer(SenderAccountNumber, token, amountTransfer)
+func (t *transferUseCase) Transfer(SenderAccountNumber int, receiverAccountNumber int, token string, amountTransfer int, isMerchant bool) error {
+	err := t.repo.SendTransfer(SenderAccountNumber, receiverAccountNumber, token, amountTransfer, isMerchant)
 	if err != nil {
 		return err
 	}
-	t.repo.GetTransfer(receiverAccountNumber, amountTransfer)
+	err = t.repo.GetTransfer(receiverAccountNumber, amountTransfer, isMerchant)
+	if err != nil {
+		return err
+	}
+	err = t.repo.AddLogToHistory(SenderAccountNumber, receiverAccountNumber, isMerchant)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

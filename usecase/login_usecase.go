@@ -6,14 +6,14 @@ import (
 )
 
 type LoginUseCase interface {
-	Login(accountNumber, userPassword, token string) error
+	Login(accountNumber int, userPassword, token string) error
 }
 
 type loginUseCase struct {
 	repo repository.CustomerRepo
 }
 
-func (l *loginUseCase) Login(accountNumber, userPassword, token string) error {
+func (l *loginUseCase) Login(accountNumber int, userPassword, token string) error {
 	userAuth := model.NewCustomer(accountNumber, userPassword)
 	err := l.repo.Login(userAuth)
 	if err != nil {

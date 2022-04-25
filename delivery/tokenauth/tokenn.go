@@ -14,7 +14,7 @@ var JwtSignatureKey = []byte("STAUFFENBERG")
 
 type MyClaims struct {
 	jwt.StandardClaims
-	AccountNumber string `json:"account_number"`
+	AccountNumber int    `json:"account_number"`
 	Password      string `json:"user_password"`
 }
 
@@ -23,11 +23,11 @@ type authHeader struct {
 }
 
 type Credential struct {
-	AccountNumber string `json:"account_number"`
+	AccountNumber int    `json:"account_number"`
 	Password      string `json:"user_password"`
 }
 
-func GenerateToken(accountNumber, password string) (string, error) {
+func GenerateToken(accountNumber int, password string) (string, error) {
 	claims := MyClaims{
 		StandardClaims: jwt.StandardClaims{
 			Issuer: ApplicationName,
