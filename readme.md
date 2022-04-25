@@ -8,7 +8,7 @@ Dependencies: pgx, sqlx, gin gonic
 
 ## Database Design
 
-![image](https://user-images.githubusercontent.com/63460549/165039108-ff84cba6-7e15-4249-83c3-c84d8b74c8a3.png)
+![Frame 1](https://user-images.githubusercontent.com/63460549/165039832-01c180f7-1a13-4e6d-9c2d-4efbab52bd03.png)
 
 ## Features
 
