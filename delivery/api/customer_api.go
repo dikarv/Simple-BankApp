@@ -65,17 +65,17 @@ func (a *CustomerApi) Transfer() gin.HandlerFunc {
 		senderAccountNumber, _ := strconv.Atoi(c.Param("user"))
 		err := a.ParseRequestBody(c, &custReq)
 		if err != nil {
-			c.Error(err)
+			c.JSON(400, gin.H{"error": err.Error()})
 			return
 		}
 		err = c.ShouldBindHeader(&authHeader)
 		if err != nil {
-			c.Error(err)
+			c.JSON(400, gin.H{"error": err.Error()})
 			return
 		}
 		err = a.transferUseCase.Transfer(senderAccountNumber, custReq.ReceiverAccountNumber, authHeader.AuthorizationHeader, custReq.AmountTransfer, custReq.IsMerchant)
 		if err != nil {
-			c.JSON(400, err.Error())
+			c.JSON(400, gin.H{"error": err.Error()})
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{

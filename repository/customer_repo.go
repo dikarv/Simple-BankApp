@@ -16,8 +16,8 @@ type CustomerRepo interface {
 	GetTransfer(accountNumber int, amountTransfer int, isMerchant bool) error
 	SaveToken(token string, account_number int) error
 	TokenValidator(token string, accountNumber int) error
-	ReceiverExistChecker(accountNumber int, isMerchant bool) error
 	AddLogToHistory(senderAccountNumber, receiverAccountNumber int, isMerchant bool) error
+	ReceiverExistChecker(accountNumber int, isMerchant bool) error
 }
 
 type CustomerRepoImpl struct {
@@ -65,6 +65,10 @@ func (c *CustomerRepoImpl) SendTransfer(senderAccountNumber int, receiverAccount
 	if err != nil {
 		return err
 	}
+	err = c.BalanceValidator(senderAccountNumber, amountTransfer)
+	if err != nil {
+		return err
+	}
 	_, err = c.custDb.Exec("UPDATE customers SET balance = balance - $1 WHERE account_number = $2", amountTransfer, senderAccountNumber)
 	if err != nil {
 		return err
@@ -72,6 +76,20 @@ func (c *CustomerRepoImpl) SendTransfer(senderAccountNumber int, receiverAccount
 	return nil
 }
 
+func (c *CustomerRepoImpl) GetTransfer(accountNumber int, amountTransfer int, isMerchant bool) error {
+	if isMerchant {
+		_, err := c.custDb.Exec("UPDATE merchants SET balance = balance + $1 WHERE merchantId = $2", amountTransfer, accountNumber)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+	_, err := c.custDb.Exec("UPDATE customers SET balance = balance + $1 WHERE account_number = $2", amountTransfer, accountNumber)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 func (c *CustomerRepoImpl) ReceiverExistChecker(accountNumber int, isMerchant bool) error {
 	var isReceiverExist int
 	if isMerchant == true {
@@ -95,21 +113,6 @@ func (c *CustomerRepoImpl) ReceiverExistChecker(accountNumber int, isMerchant bo
 	return nil
 }
 
-func (c *CustomerRepoImpl) GetTransfer(accountNumber int, amountTransfer int, isMerchant bool) error {
-	if isMerchant {
-		_, err := c.custDb.Exec("UPDATE merchants SET balance = balance + $1 WHERE merchantId = $2", amountTransfer, accountNumber)
-		if err != nil {
-			return err
-		}
-		return nil
-	}
-	_, err := c.custDb.Exec("UPDATE customers SET balance = balance + $1 WHERE account_number = $2", amountTransfer, accountNumber)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func (c *CustomerRepoImpl) TokenValidator(token string, accountNumber int) error {
 	var selectedToken string
 	err := c.custDb.Get(&selectedToken, "SELECT token FROM customers WHERE account_number = $1", accountNumber)
@@ -119,6 +122,18 @@ func (c *CustomerRepoImpl) TokenValidator(token string, accountNumber int) error
 	token = strings.Replace(token, "Bearer ", "", -1)
 	if selectedToken != token {
 		return errors.New("unauthorized userr")
+	}
+	return nil
+}
+
+func (c *CustomerRepoImpl) BalanceValidator(accounNumber, amountTransfer int) error {
+	var balance int
+	err := c.custDb.Get(&balance, "SELECT balance FROM customers WHERE account_number = $1", accounNumber)
+	if err != nil {
+		return err
+	}
+	if amountTransfer > balance {
+		return errors.New("BALANCE IS NOT SUFFICIENT")
 	}
 	return nil
 }
