@@ -4,6 +4,8 @@ This is BankApp made with Go with Clean Architecture (API).
 
 This App make you as a user, you can do money transfer to another user or payment to a merchant.
 
+There is also History/log table to record transfer/payment activity between accounts
+
 Database : PostgreSQL 
 <br/>
 Dependencies: pgx, sqlx, gin gonic
@@ -27,3 +29,8 @@ Dependencies: pgx, sqlx, gin gonic
 - Log out, token deleted from database
 
 ![image](https://user-images.githubusercontent.com/63460549/165038187-1cbea647-44e8-4ad1-8b9a-055a0e6b319e.png)
+
+
+- History/Log table
+
+![image](https://user-images.githubusercontent.com/63460549/165045419-7bd695cd-fc31-4822-a99c-6b173faff50f.png)
