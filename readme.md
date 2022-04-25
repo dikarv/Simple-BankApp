@@ -1,9 +1,11 @@
 # BankApp for MNC Test
 
-BankApp made with Go with Clean Architecture (API).
+This is BankApp made with Go with Clean Architecture (API).
+
+This App make you as a user, you can do money transfer to another user or payment to a merchant.
 
 Database : PostgreSQL 
-
+<br/>
 Dependencies: pgx, sqlx, gin gonic
 
 ## Database Design
