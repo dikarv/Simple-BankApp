@@ -1,6 +1,6 @@
 # MNCTestApp
 SimpleBankApp made with Go with Clean Architecture (API). 
-Database : PostgreSQL \n
+Database : PostgreSQL
 Dependencies: pgx, sqlx, gin gonic
 
 ## Features 
