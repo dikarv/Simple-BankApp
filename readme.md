@@ -1,4 +1,4 @@
-# BankApp for MNC Test
+# Simple BankApp
 
 This is BankApp made with Go with Clean Architecture (API).
 
@@ -13,7 +13,7 @@ Dependencies: pgx, sqlx, gin gonic
 ## Database Design
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/63460549/165040318-fa79b0d1-a70b-4355-9d84-d559f4ab86d6.png">
+  <img src="https://user-images.githubusercontent.com/63460549/170678912-d832bcf5-34e1-4dd3-b5a3-ffd7a2c77534.png">
 </p>
 
 ## Features
